@@ -1,0 +1,24 @@
+{
+  "name": "api-microservices",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/HolmesAyala/api-microservices.git",
+  "author": "HolmesAyala <holmesayala9@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "co": "^4.6.0",
+    "config": "^3.3.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "get-parameter-names": "^0.3.0",
+    "joi": "^14.3.1",
+    "lodash": "^4.17.19",
+    "mongoose": "^5.9.22",
+    "nodemon": "^2.0.4",
+    "winston": "^3.3.3"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  }
+}
