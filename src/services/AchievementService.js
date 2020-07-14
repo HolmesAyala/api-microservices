@@ -1,6 +1,9 @@
 let _ = require("lodash")
 let AchievementDB = require("../models/AchievementDB")
 let AchievementTypeService = require("./AchievementTypeService")
+const logger = require("../helpers/logger")
+let Joi = require("joi")
+Joi.objectId = require('joi-objectid')(Joi)
 
 /**
  * Get all achievements
@@ -15,6 +18,10 @@ async function getAll() {
  */
 async function getByMember(memberId) {
 	return await AchievementDB.find({ memberId: _.toInteger(memberId) })
+}
+
+getByMember.schema = {
+	memberId: Joi.number().required()
 }
 
 /**
@@ -36,8 +43,37 @@ async function assignAchievementToMember(memberId, achievementId) {
 	})
 }
 
+assignAchievementToMember.schema = {
+	memberId: Joi.number().required(),
+	achievementId: Joi.objectId().required()
+}
+
+/**
+ * Remove an achievement of a member
+ * @param {String} memberId Member id
+ * @param {String} achievementId Achievement id
+ */
+async function removeAchievementToMember(memberId, achievementId) {
+	let achievement = await AchievementDB.findOne({
+		memberId,
+		achievementId
+	})
+
+	if(!achievement) throw new Error("Achievement not found");
+
+	await achievement.remove()
+}
+
+removeAchievementToMember.schema = {
+	memberId: Joi.number().required(),
+	achievementId: Joi.objectId().required()
+}
+
 module.exports = {
 	getAll,
 	getByMember,
-	assignAchievementToMember
+	assignAchievementToMember,
+	removeAchievementToMember
 }
+
+logger.autoValidate(module.exports)

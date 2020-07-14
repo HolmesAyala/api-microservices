@@ -3,9 +3,11 @@ let Express = require("express")
 let Config = require("config")
 let Mongoose = require("mongoose")
 let Cors = require("cors")
-let AchievementTypeController = require("./controllers/AchievementTypeController")
-let AchievementController = require("./controllers/AchievementController")
 let { errorHandler } = require("./helpers/middlewares")
+let _ = require("lodash")
+let routes = require("./routes")
+let { validateToken } = require("./helpers")
+let errors = require("./helpers/errors")
 
 // Variables
 let expressServer = Express()
@@ -30,14 +32,31 @@ expressServer.get("", (req, res) => {
 	res.send("Running")
 })
 
-expressServer.get("/achievement-type", AchievementTypeController.getAll)
-expressServer.post("/achievement-type", AchievementTypeController.create)
-expressServer.get("/achievement-type/:id", AchievementTypeController.getById)
-expressServer.put("/achievement-type/:id", AchievementTypeController.update)
-expressServer.delete("/achievement-type/:id", AchievementTypeController.remove)
+_.each(routes, (route, routeName) => {
+	_.each(route, (def, verb) => {
+		let actions = []
+		
+		if(def.requireAuth) {
+			actions.push(async (req, res, next) => {
+				try {
+					let header = _.get(req.headers, "authorization", "")
+					let token = _.get(header.split(" "), "[1]", "")
+					console.log(token);
+					let authUser = await validateToken(token, def.allowedRoles)
+					req.authUser = authUser
 
-expressServer.get("/members/:memberId/achievements", AchievementController.getByMember)
-expressServer.post("/members/:memberId/achievements", AchievementController.assignAchievementToMember)
+					next()
+				} catch (error) {
+					next(error)
+				}
+			})
+		}
+
+		actions.push(def.method)
+
+		expressServer[verb](routeName, actions)
+	})
+})
 
 expressServer.use(errorHandler)
 

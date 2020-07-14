@@ -27,7 +27,7 @@ logger.logFullError = (err, signature) => {
 
 	if(signature) logger.error(`Error happened in: ${signature}`);
 
-	logger.error(util.inspect(err))
+	logger.error(Util.inspect(err))
 
 	if(!err.logged) {
 		logger.error(err.stack)

@@ -11,7 +11,7 @@ const logger = require("./logger")
 function errorHandler(err, req, res, next) {
 	logger.logFullError(err, req.signature || `${req.method} ${req.url}`)
 	let responseError = {}
-	let status = error.httpStatus || 503
+	let status = err.httpStatus || 503
 
 	if(err.isJoi) {
 		status = 400

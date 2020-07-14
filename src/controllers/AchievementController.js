@@ -31,8 +31,23 @@ async function assignAchievementToMember(req, res) {
 	))
 }
 
+/**
+ * 
+ * @param {Object} req Request object
+ * @param {Object} res Response object
+ */
+async function removeAchievementToMember(req, res) {
+	await AchievementService.removeAchievementToMember(
+		req.params.memberId,
+		req.params.achievementId
+	)
+
+	res.sendStatus(204)
+}
+
 module.exports = {
 	getAll: wrapRoute(getAll),
 	getByMember: wrapRoute(getByMember),
-	assignAchievementToMember: wrapRoute(assignAchievementToMember)
+	assignAchievementToMember: wrapRoute(assignAchievementToMember),
+	removeAchievementToMember: wrapRoute(removeAchievementToMember)
 }

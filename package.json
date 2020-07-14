@@ -12,13 +12,17 @@
     "express": "^4.17.1",
     "get-parameter-names": "^0.3.0",
     "joi": "^14.3.1",
+    "joi-objectid": "^3.0.1",
+    "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.19",
     "mongoose": "^5.9.22",
     "nodemon": "^2.0.4",
+    "standard": "^14.3.4",
     "winston": "^3.3.3"
   },
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "lint": "standard src/"
   }
 }

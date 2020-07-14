@@ -1,0 +1,20 @@
+version: "2"
+services:
+  database:
+    image: mongo
+    environment:
+      MONGO_INITDB_DATABASE: api-microservices-db
+    ports:
+      - "27017:27017"
+  api:
+    build: ./
+    depends_on: [database]
+    links:
+      - database
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://database:27017/api-microservices-db
+      LOG_LEVEL: debug
+      JWT_SECRET: secret

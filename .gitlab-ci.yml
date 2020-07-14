@@ -1,0 +1,43 @@
+image: node:10
+
+stages:
+	- setup
+	- lint
+	- deploy
+
+yarn_install:
+	stage: setup
+	script:
+		- yarn install
+	artifacts:
+		paths:
+			- node_modules/
+
+yarn_run_lint:
+	stage: lint
+	script:
+		- yarn run lint
+
+deploy_staging:
+	state: deploy
+	image: ruby:2.3
+	script:
+		- apt-get update -qy
+		- apt-get install -y ruby-dev rubygems
+		- gem install faraday -v 0.15.4
+		- gem install dpl
+		- dpl --provider=heroku --app=$HEROKU_APP_NAME_STAGING --api-key=$HEROKU_API_KEY
+	only:
+		- develop
+
+deploy_production:
+	state: deploy
+	image: ruby:2.3
+	script:
+		- apt-get update -qy
+		- apt-get install -y ruby-dev rubygems
+		- gem install faraday -v 0.15.4
+		- gem install dpl
+		- dpl --provider=heroku --app=$HEROKU_APP_NAME_PROD --api-key=$HEROKU_API_KEY
+	only:
+		- master
